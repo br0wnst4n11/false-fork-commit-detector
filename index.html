@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Client-side tool to detect potentially suspicious false fork commits on GitHub using the public REST API." />
+  <title>False Fork Commit Detector</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header>
+    <span class="logo" aria-hidden="true">🔍</span>
+    <div>
+      <h1>False Fork Commit Detector</h1>
+      <p class="tagline">Detect potentially suspicious orphaned or fork commits on GitHub — runs entirely in your browser.</p>
+    </div>
+  </header>
+
+  <!-- ── Main ────────────────────────────────────────────── -->
+  <main>
+    <div class="card">
+
+      <!-- Input form -->
+      <section class="form-section" aria-label="Detection inputs">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="repo-input">Repository (owner/repo)</label>
+            <input
+              type="text"
+              id="repo-input"
+              placeholder="e.g. torvalds/linux"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="repo-hint"
+            />
+          </div>
+          <div class="form-group">
+            <label for="sha-input">Commit SHA</label>
+            <input
+              type="text"
+              id="sha-input"
+              placeholder="e.g. abc1234…"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="sha-hint"
+            />
+          </div>
+          <button id="detect-btn" class="btn btn-primary" type="button">
+            Detect
+          </button>
+        </div>
+
+        <!-- Settings / PAT -->
+        <button
+          id="settings-toggle"
+          class="settings-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="settings-panel"
+        >
+          <i class="arrow" aria-hidden="true">▶</i>
+          Advanced settings (optional PAT for higher rate limits)
+        </button>
+
+        <div id="settings-panel" class="settings-panel" role="region" aria-label="Advanced settings">
+          <div class="pat-row">
+            <div class="form-group">
+              <label for="pat-input">GitHub Personal Access Token</label>
+              <input
+                type="password"
+                id="pat-input"
+                placeholder="ghp_…"
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
+            <button id="save-pat-btn" class="btn btn-secondary btn-sm" type="button">Save</button>
+            <button id="clear-pat-btn" class="btn btn-danger" type="button">Clear</button>
+          </div>
+          <p class="hint">
+            Stored only in <code>localStorage</code> under key <code>ghpat</code>.
+            Never sent anywhere except directly to <code>api.github.com</code>.
+            A PAT raises the rate limit from 60 to 5 000 requests/hr.
+          </p>
+        </div>
+      </section>
+
+      <!-- Loading spinner -->
+      <div id="loading" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Running detection pipeline…</span>
+      </div>
+
+      <!-- Results -->
+      <div id="results" aria-live="polite"></div>
+
+    </div><!-- /.card -->
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────── -->
+  <footer>
+    <p>
+      <a href="https://github.com/br0wnst4n11/false-fork-commit-detector" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
+      &nbsp;·&nbsp;
+      Runs entirely client-side &mdash; no data is sent to any server besides <code>api.github.com</code>.
+      &nbsp;·&nbsp;
+      MIT License
+    </p>
+  </footer>
+
+  <!-- Scripts loaded in dependency order -->
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/detector.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
