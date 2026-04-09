@@ -99,7 +99,15 @@ var Utils = (function () {
     try {
       var now = Date.now();
       var then = new Date(dateString).getTime();
-      var diff = Math.floor((now - then) / 1000); // seconds
+      var diff = Math.floor((now - then) / 1000); // seconds (negative = future)
+
+      if (diff < 0) {
+        var absDiff = Math.abs(diff);
+        if (absDiff < 60)    return 'in ' + absDiff + ' second' + (absDiff === 1 ? '' : 's');
+        if (absDiff < 3600)  { var fm = Math.floor(absDiff / 60);   return 'in ' + fm + ' minute' + (fm === 1 ? '' : 's'); }
+        if (absDiff < 86400) { var fh = Math.floor(absDiff / 3600); return 'in ' + fh + ' hour'   + (fh === 1 ? '' : 's'); }
+        return 'in the future';
+      }
 
       if (diff < 60)    return diff + ' second' + (diff === 1 ? '' : 's') + ' ago';
       if (diff < 3600)  { var m = Math.floor(diff / 60);   return m + ' minute' + (m === 1 ? '' : 's') + ' ago'; }

@@ -230,16 +230,19 @@ var CommitDetector = (function () {
       }
 
       /* ── Final classification ─────────────────────────────── */
+      // Priority: vouched > reachable > suspicious > orphaned
       var classify;
-      if ((isReachable || isHeadOfBranch) && (hasVerifiedSignature || hasSignedTag)) {
+      var isCryptoVouched = hasVerifiedSignature || hasSignedTag;
+      if (isCryptoVouched) {
+        // A verified signature is the strongest positive signal regardless of reachability
         classify = 'vouched';
       } else if (isReachable || isHeadOfBranch) {
         classify = 'reachable';
-      } else if (hasVerifiedSignature || hasSignedTag) {
-        classify = 'vouched';
-      } else if (!isReachable && !isHeadOfBranch && !hasTag && !hasPR) {
+      } else if (!hasTag && !hasPR) {
+        // Not reachable, not vouched, no tags, no PRs — most suspicious
         classify = 'suspicious';
       } else {
+        // Not reachable but has a tag or PR association — orphaned but not entirely untracked
         classify = 'orphaned';
       }
       result.classification = classify;
